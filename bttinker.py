@@ -7,10 +7,12 @@ import pandas as pd
 
 CSV_FILE = "nhan_vien.csv"
 
+
 def save_to_csv(data):
     with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(data)
+
 
 def get_employees_with_birthday_today():
     today = datetime.now().strftime("%d/%m/%Y")
@@ -18,23 +20,25 @@ def get_employees_with_birthday_today():
     try:
         with open(CSV_FILE, mode="r", encoding="utf-8") as file:
             reader = csv.reader(file)
-            next(reader)  
+            next(reader)
             for row in reader:
-                if row[3] == today:  
+                if row[3] == today:
                     employees.append(row)
     except FileNotFoundError:
         pass
     return employees
 
+
 def export_to_excel():
     try:
         df = pd.read_csv(CSV_FILE, encoding="utf-8")
         df["Ngày sinh"] = pd.to_datetime(df["Ngày sinh"], format="%d/%m/%Y")
-        df.sort_values(by="Ngày sinh", ascending=True, inplace=True) 
+        df.sort_values(by="Ngày sinh", ascending=True, inplace=True)
         df.to_excel("Danh_sach_nhan_vien.xlsx", index=False, encoding="utf-8")
         messagebox.showinfo("Thông báo", "Xuất file Excel thành công!")
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể xuất file Excel: {e}")
+
 
 def submit_form():
     data = [
@@ -45,7 +49,7 @@ def submit_form():
         gender_var.get(),
         entry_id_card.get(),
         entry_issue_date.get(),
-        entry_issue_place.get()
+        entry_issue_place.get(),
     ]
 
     if "" in data:
@@ -56,6 +60,7 @@ def submit_form():
     messagebox.showinfo("Thông báo", "Lưu thông tin thành công!")
     clear_form()
 
+
 def show_birthday_today():
     employees = get_employees_with_birthday_today()
     if not employees:
@@ -63,6 +68,7 @@ def show_birthday_today():
     else:
         result = "\n".join([f"Mã: {e[0]}, Tên: {e[1]}" for e in employees])
         messagebox.showinfo("Danh sách sinh nhật hôm nay", result)
+
 
 def clear_form():
     entry_id.delete(0, tk.END)
